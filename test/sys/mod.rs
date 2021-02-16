@@ -23,7 +23,7 @@ mod test_select;
 mod test_sysinfo;
 #[cfg(not(any(target_os = "redox", target_os = "fuchsia")))]
 mod test_termios;
-#[cfg(not(any(target_os = "redox", target_os = "fuchsia")))]
+#[cfg(not(any(target_os = "redox", target_os = "fuchsia", target_os = "illumos")))]
 mod test_ioctl;
 mod test_wait;
 mod test_uio;

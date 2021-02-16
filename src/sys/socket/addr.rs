@@ -18,6 +18,7 @@ use crate::sys::socket::addr::sys_control::SysControlAddr;
           target_os = "dragonfly",
           target_os = "freebsd",
           target_os = "ios",
+          target_os = "illumos",
           target_os = "linux",
           target_os = "macos",
           target_os = "netbsd",
@@ -98,12 +99,15 @@ pub enum AddressFamily {
     Can = libc::AF_CAN,
     #[cfg(any(target_os = "android", target_os = "linux"))]
     Tipc = libc::AF_TIPC,
-    #[cfg(not(any(target_os = "ios", target_os = "macos")))]
+    #[cfg(not(any(target_os = "ios",
+                  target_os = "macos",
+                  target_os = "illumos")))]
     Bluetooth = libc::AF_BLUETOOTH,
     #[cfg(any(target_os = "android", target_os = "linux"))]
     Iucv = libc::AF_IUCV,
     #[cfg(any(target_os = "android", target_os = "linux"))]
     RxRpc = libc::AF_RXRPC,
+    #[cfg(not(target_os = "illumos"))]
     Isdn = libc::AF_ISDN,
     #[cfg(any(target_os = "android", target_os = "linux"))]
     Phonet = libc::AF_PHONET,
@@ -189,6 +193,7 @@ pub enum AddressFamily {
     #[cfg(any(target_os = "dragonfly",
               target_os = "freebsd",
               target_os = "ios",
+              target_os = "illumos",
               target_os = "macos",
               target_os = "netbsd",
               target_os = "openbsd"))]
@@ -1117,6 +1122,7 @@ mod datalink {
 #[cfg(any(target_os = "dragonfly",
           target_os = "freebsd",
           target_os = "ios",
+          target_os = "illumos",
           target_os = "macos",
           target_os = "netbsd",
           target_os = "openbsd"))]
@@ -1129,6 +1135,7 @@ mod datalink {
 
     impl LinkAddr {
         /// Total length of sockaddr
+        #[cfg(not(any(target_os = "illumos")))]
         pub fn len(&self) -> usize {
             self.0.sdl_len as usize
         }

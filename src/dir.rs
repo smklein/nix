@@ -196,6 +196,7 @@ impl Entry {
               target_os = "l4re",
               target_os = "linux",
               target_os = "macos",
+              target_os = "illumos",
               target_os = "solaris"))]
     pub fn ino(&self) -> u64 {
         self.0.d_ino as u64
@@ -210,6 +211,7 @@ impl Entry {
                   target_os = "l4re",
                   target_os = "linux",
                   target_os = "macos",
+                  target_os = "illumos",
                   target_os = "solaris")))]
     pub fn ino(&self) -> u64 {
         u64::from(self.0.d_fileno)
@@ -225,6 +227,7 @@ impl Entry {
     /// See platform `readdir(3)` or `dirent(5)` manpage for when the file type is known;
     /// notably, some Linux filesystems don't implement this. The caller should use `stat` or
     /// `fstat` if this returns `None`.
+    #[cfg(not(any(target_os = "illumos")))]
     pub fn file_type(&self) -> Option<Type> {
         match self.0.d_type {
             libc::DT_FIFO => Some(Type::Fifo),
@@ -237,4 +240,15 @@ impl Entry {
             /* libc::DT_UNKNOWN | */ _ => None,
         }
     }
+
+    /// Returns the type of this directory entry, if known.
+    ///
+    /// See platform `readdir(3)` or `dirent(5)` manpage for when the file type is known;
+    /// notably, some Linux filesystems don't implement this. The caller should use `stat` or
+    /// `fstat` if this returns `None`.
+    #[cfg(any(target_os = "illumos"))]
+    pub fn file_type(&self) -> Option<Type> {
+        None
+    }
+
 }

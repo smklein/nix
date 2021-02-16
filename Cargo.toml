@@ -27,11 +27,13 @@ targets = [
   "x86_64-unknown-netbsd",
   "x86_64-unknown-dragonfly",
   "x86_64-fuchsia",
-  "x86_64-unknown-redox"
+  "x86_64-unknown-redox",
+  "x86_64-unknown-illumos"
 ]
 
 [dependencies]
-libc = { version = "0.2.82", features = [ "extra_traits" ] }
+# libc = { version = "0.2.86", features = [ "extra_traits" ] }
+libc = { path = "/home/smklein/libc", features = [ "extra_traits" ] }
 bitflags = "1.1"
 cfg-if = "1.0"
 

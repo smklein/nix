@@ -18,6 +18,10 @@ cfg_if! {
         unsafe fn errno_location() -> *mut c_int {
             libc::__errno()
         }
+    } else if #[cfg(target_os = "illumos")] {
+        unsafe fn errno_location() -> *mut c_int {
+            libc::___errno()
+        }
     } else if #[cfg(any(target_os = "linux",
                         target_os = "redox",
                         target_os = "dragonfly",
@@ -278,7 +282,7 @@ fn desc(errno: Errno) -> &'static str {
         EREMOTE         => "Object is remote",
 
         #[cfg(any(target_os = "linux", target_os = "android",
-                  target_os = "fuchsia"))]
+                  target_os = "fuchsia", target_os = "illumos"))]
         ENOLINK         => "Link has been severed",
 
         #[cfg(any(target_os = "linux", target_os = "android",
@@ -294,11 +298,11 @@ fn desc(errno: Errno) -> &'static str {
         ECOMM           => "Communication error on send",
 
         #[cfg(any(target_os = "linux", target_os = "android",
-                  target_os = "fuchsia"))]
+                  target_os = "fuchsia", target_os = "illumos"))]
         EPROTO          => "Protocol error",
 
         #[cfg(any(target_os = "linux", target_os = "android",
-                  target_os = "fuchsia"))]
+                  target_os = "fuchsia", target_os = "illumos"))]
         EMULTIHOP       => "Multihop attempted",
 
         #[cfg(any(target_os = "linux", target_os = "android",
@@ -310,7 +314,7 @@ fn desc(errno: Errno) -> &'static str {
         EBADMSG         => "Not a data message",
 
         #[cfg(any(target_os = "linux", target_os = "android",
-                  target_os = "fuchsia"))]
+                  target_os = "fuchsia", target_os = "illumos"))]
         EOVERFLOW       => "Value too large for defined data type",
 
         #[cfg(any(target_os = "linux", target_os = "android",
@@ -346,7 +350,8 @@ fn desc(errno: Errno) -> &'static str {
         ELIBEXEC        => "Cannot exec a shared library directly",
 
         #[cfg(any(target_os = "linux", target_os = "android",
-                  target_os = "fuchsia", target_os = "openbsd"))]
+                  target_os = "fuchsia", target_os = "openbsd",
+                  target_os = "illumos"))]
         EILSEQ          => "Illegal byte sequence",
 
         #[cfg(any(target_os = "linux", target_os = "android",
@@ -358,12 +363,12 @@ fn desc(errno: Errno) -> &'static str {
         ESTRPIPE        => "Streams pipe error",
 
         #[cfg(any(target_os = "linux", target_os = "android",
-                  target_os = "fuchsia"))]
+                  target_os = "fuchsia", target_os = "illumos"))]
         EUSERS          => "Too many users",
 
         #[cfg(any(target_os = "linux", target_os = "android",
                   target_os = "fuchsia", target_os = "netbsd",
-                  target_os = "redox"))]
+                  target_os = "redox", target_os = "illumos"))]
         EOPNOTSUPP      => "Operation not supported on transport endpoint",
 
         #[cfg(any(target_os = "linux", target_os = "android",
@@ -391,7 +396,7 @@ fn desc(errno: Errno) -> &'static str {
         EREMOTEIO       => "Remote I/O error",
 
         #[cfg(any(target_os = "linux", target_os = "android",
-                  target_os = "fuchsia"))]
+                  target_os = "fuchsia", target_os = "illumos"))]
         EDQUOT          => "Quota exceeded",
 
         #[cfg(any(target_os = "linux", target_os = "android",
@@ -404,7 +409,7 @@ fn desc(errno: Errno) -> &'static str {
         EMEDIUMTYPE     => "Wrong medium type",
 
         #[cfg(any(target_os = "linux", target_os = "android",
-                  target_os = "fuchsia"))]
+                  target_os = "fuchsia", target_os = "illumos"))]
         ECANCELED       => "Operation canceled",
 
         #[cfg(any(target_os = "linux", target_os = "android",
@@ -478,7 +483,7 @@ fn desc(errno: Errno) -> &'static str {
         #[cfg(any(target_os = "macos", target_os = "freebsd",
                   target_os = "dragonfly", target_os = "ios",
                   target_os = "openbsd", target_os = "netbsd",
-                  target_os = "redox"))]
+                  target_os = "redox", target_os = "illumos"))]
         EBADMSG         => "Bad message",
 
         #[cfg(any(target_os = "macos", target_os = "freebsd",
@@ -520,13 +525,13 @@ fn desc(errno: Errno) -> &'static str {
         #[cfg(any(target_os = "macos", target_os = "freebsd",
                   target_os = "dragonfly", target_os = "ios",
                   target_os = "openbsd", target_os = "netbsd",
-                  target_os = "redox"))]
+                  target_os = "redox", target_os = "illumos"))]
         ESTALE          => "Stale NFS file handle",
 
         #[cfg(any(target_os = "macos", target_os = "freebsd",
                   target_os = "dragonfly", target_os = "ios",
                   target_os = "openbsd", target_os = "netbsd",
-                  target_os = "redox"))]
+                  target_os = "redox", target_os = "illumos"))]
         EREMOTE         => "Too many levels of remote in path",
 
         #[cfg(any(target_os = "macos", target_os = "freebsd",
@@ -592,22 +597,26 @@ fn desc(errno: Errno) -> &'static str {
         EMULTIHOP       => "Reserved",
 
         #[cfg(any(target_os = "macos", target_os = "ios",
-                  target_os = "netbsd", target_os = "redox"))]
+                  target_os = "netbsd", target_os = "redox",
+                  target_os = "illumos"))]
         ENODATA         => "No message available on STREAM",
 
         #[cfg(any(target_os = "macos", target_os = "ios", target_os = "netbsd"))]
         ENOLINK         => "Reserved",
 
         #[cfg(any(target_os = "macos", target_os = "ios",
-                  target_os = "netbsd", target_os = "redox"))]
+                  target_os = "netbsd", target_os = "redox",
+                  target_os = "illumos"))]
         ENOSR           => "No STREAM resources",
 
         #[cfg(any(target_os = "macos", target_os = "ios",
-                  target_os = "netbsd", target_os = "redox"))]
+                  target_os = "netbsd", target_os = "redox",
+                  target_os = "illumos"))]
         ENOSTR          => "Not a STREAM",
 
         #[cfg(any(target_os = "macos", target_os = "ios",
-                  target_os = "netbsd", target_os = "redox"))]
+                  target_os = "netbsd", target_os = "redox",
+                  target_os = "illumos"))]
         ETIME           => "STREAM ioctl timeout",
 
         #[cfg(any(target_os = "macos", target_os = "ios"))]
@@ -2008,7 +2017,7 @@ mod consts {
     }
 }
 
-#[cfg(target_os = "redox")]
+#[cfg(any(target_os = "redox", target_os = "illumos"))]
 mod consts {
     #[derive(Clone, Copy, Debug, Eq, PartialEq)]
     #[repr(i32)]

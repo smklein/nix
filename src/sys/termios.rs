@@ -502,6 +502,7 @@ libc_enum! {
         VDISCARD,
         #[cfg(any(target_os = "dragonfly",
                 target_os = "freebsd",
+                target_os = "illumos",
                 target_os = "macos",
                 target_os = "netbsd",
                 target_os = "openbsd"))]
@@ -510,18 +511,20 @@ libc_enum! {
         VEOL,
         VEOL2,
         VERASE,
-        #[cfg(any(target_os = "dragonfly", target_os = "freebsd"))]
+        #[cfg(any(target_os = "dragonfly", target_os = "freebsd", target_os = "illumos"))]
         VERASE2,
         VINTR,
         VKILL,
         VLNEXT,
-        #[cfg(not(all(target_os = "linux", target_arch = "sparc64")))]
+        #[cfg(not(any(target_os = "illumos",
+                      all(target_os = "linux", target_arch = "sparc64"))))]
         VMIN,
         VQUIT,
         VREPRINT,
         VSTART,
         #[cfg(any(target_os = "dragonfly",
                 target_os = "freebsd",
+                target_os = "illumos",
                 target_os = "macos",
                 target_os = "netbsd",
                 target_os = "openbsd"))]
@@ -530,9 +533,10 @@ libc_enum! {
         VSUSP,
         #[cfg(target_os = "linux")]
         VSWTC,
-        #[cfg(target_os = "haiku")]
+        #[cfg(any(target_os = "haiku", target_os = "illumos"))]
         VSWTCH,
-        #[cfg(not(all(target_os = "linux", target_arch = "sparc64")))]
+        #[cfg(not(any(target_os = "illumos",
+                      all(target_os = "linux", target_arch = "sparc64"))))]
         VTIME,
         VWERASE,
         #[cfg(target_os = "dragonfly")]
@@ -540,7 +544,8 @@ libc_enum! {
     }
 }
 
-#[cfg(all(target_os = "linux", target_arch = "sparc64"))]
+#[cfg(any(target_os = "illumos",
+          all(target_os = "linux", target_arch = "sparc64")))]
 impl SpecialCharacterIndices {
     pub const VMIN: SpecialCharacterIndices = SpecialCharacterIndices::VEOF;
     pub const VTIME: SpecialCharacterIndices = SpecialCharacterIndices::VEOL;

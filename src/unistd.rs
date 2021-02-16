@@ -906,6 +906,7 @@ pub fn sethostname<S: AsRef<OsStr>>(name: S) -> Result<()> {
     cfg_if! {
         if #[cfg(any(target_os = "dragonfly",
                      target_os = "freebsd",
+                     target_os = "illumos",
                      target_os = "ios",
                      target_os = "macos", ))] {
             type sethostname_len_t = c_int;
@@ -1468,6 +1469,7 @@ pub fn setgroups(groups: &[Gid]) -> Result<()> {
     cfg_if! {
         if #[cfg(any(target_os = "dragonfly",
                      target_os = "freebsd",
+                     target_os = "illumos",
                      target_os = "ios",
                      target_os = "macos",
                      target_os = "netbsd",
@@ -1507,7 +1509,7 @@ pub fn setgroups(groups: &[Gid]) -> Result<()> {
 /// and `setgroups()`. Additionally, while some implementations will return a
 /// partial list of groups when `NGROUPS_MAX` is exceeded, this implementation
 /// will only ever return the complete list or else an error.
-#[cfg(not(any(target_os = "ios", target_os = "macos", target_os = "redox")))]
+#[cfg(not(any(target_os = "ios", target_os = "macos", target_os = "redox", target_os = "illumos")))]
 pub fn getgrouplist(user: &CStr, group: Gid) -> Result<Vec<Gid>> {
     let ngroups_max = match sysconf(SysconfVar::NGROUPS_MAX) {
         Ok(Some(n)) => n as c_int,
@@ -2549,15 +2551,15 @@ pub struct User {
     pub shell: PathBuf,
     /// Login class
     #[cfg(not(any(target_os = "android", target_os = "fuchsia",
-                  target_os = "linux")))]
+                  target_os = "linux", target_os = "illumos")))]
     pub class: CString,
     /// Last password change
     #[cfg(not(any(target_os = "android", target_os = "fuchsia",
-                  target_os = "linux")))]
+                  target_os = "linux", target_os = "illumos")))]
     pub change: libc::time_t,
     /// Expiration time of account
     #[cfg(not(any(target_os = "android", target_os = "fuchsia",
-                  target_os = "linux")))]
+                  target_os = "linux", target_os = "illumos")))]
     pub expire: libc::time_t
 }
 
@@ -2575,13 +2577,13 @@ impl From<&libc::passwd> for User {
                 uid: Uid::from_raw((*pw).pw_uid),
                 gid: Gid::from_raw((*pw).pw_gid),
                 #[cfg(not(any(target_os = "android", target_os = "fuchsia",
-                              target_os = "linux")))]
+                              target_os = "linux", target_os = "illumos")))]
                 class: CString::new(CStr::from_ptr((*pw).pw_class).to_bytes()).unwrap(),
                 #[cfg(not(any(target_os = "android", target_os = "fuchsia",
-                              target_os = "linux")))]
+                              target_os = "linux", target_os = "illumos")))]
                 change: (*pw).pw_change,
                 #[cfg(not(any(target_os = "android", target_os = "fuchsia",
-                              target_os = "linux")))]
+                              target_os = "linux", target_os = "illumos")))]
                 expire: (*pw).pw_expire
             }
         }
